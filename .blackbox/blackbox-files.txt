@@ -1,0 +1,4 @@
+instance/flask-dev.cfg
+instance/flask-prod.cfg
+instance/flask-test.cfg
+instance/joinder-firebase-adminsdk-u26aa-643b5f8f5b.json

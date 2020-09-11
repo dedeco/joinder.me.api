@@ -1,0 +1,43 @@
+{
+    "message": "Profile found",
+    "results": [
+        {
+            "name": "André de Sousa Araújo",
+            "about": "Olá, eu sou a André, comigo não tem coré coré, estou aqui para o que der e vier.",
+            "way_of_love": ["affirming words"],
+            "goals": [
+                "dating",
+                "friendship",
+                "casual dating"
+            ],
+            "mobile_number": 5531996336040,
+              "photo": ["http://www.stachastyles.com/wp-content/uploads/2018/02/amazing-freddie-mercury-freddie-mercury-hairstyle-20.jpg"
+              , "http://www.stachastyles.com/wp-content/uploads/2018/02/amazing-freddie-mercury-freddie-mercury-hairstyle-20.jpg"],
+            "id": "KjD4jCqE6sFHb7ioNwgb",
+            "genders": [
+                "man"
+            ],
+            "location": {
+                "longitude": -43.919604,
+                "latitude": -19.911073
+            },
+            "looking_for": [
+                "transsexual woman",
+                "woman"
+            ],
+            "email": "dedeco@gmail.com",
+            "birth": {
+                "place": {
+                    "city": "Belo Horizonte"
+                }
+            },
+            "interested_in": [
+                "sports",
+                "music",
+                "books",
+                "trips",
+                "food"
+            ]
+        }
+    ]
+}

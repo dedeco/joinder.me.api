@@ -1,0 +1,68 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/profiles/health/{ping,status}",
+        "run": {
+          "serviceId": "joinder-profiles",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/v1/profiles{,/**}",
+        "run": {
+          "serviceId": "joinder-profiles",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/users/health/{ping,status}",
+        "run": {
+          "serviceId": "joinder-users",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/v1/users{,/**}",
+        "run": {
+          "serviceId": "joinder-users",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/contents/health/{ping,status}",
+        "run": {
+          "serviceId": "joinder-contents",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/v1/contents{,/**}",
+        "run": {
+          "serviceId": "joinder-contents",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/chats/health/{ping,status}",
+        "run": {
+          "serviceId": "joinder-chats",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/v1/chats{,/**}",
+        "run": {
+          "serviceId": "joinder-chats",
+          "region": "us-central1"
+        }
+      }
+    ]
+  }
+}

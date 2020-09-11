@@ -1,0 +1,9 @@
+# cloudbuild.yaml
+steps:
+  # build & push the container image
+- name: "gcr.io/kaniko-project/executor:latest"
+  args: ["--cache=true", "--cache-ttl=48h", "--destination=gcr.io/$PROJECT_ID/joinder.chats:latest"]
+  # Deploy container image to Cloud Run
+- name: "gcr.io/cloud-builders/gcloud"
+  args: ['beta', 'run', 'deploy', 'joinder-chats', '--image', 'gcr.io/$PROJECT_ID/joinder.chats', '--region',
+         'us-central1', '--allow-unauthenticated', '--platform', 'managed', '--memory', '1Gi']

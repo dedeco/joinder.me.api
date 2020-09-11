@@ -1,0 +1,1468 @@
+FORMAT: 1A
+HOST: https://dev.api.joinder.me
+
+# joinder.me
+
+Profile is a microservice API allowing consumers to create, edit, update, delete.
+
+## Profile Collection [/api/v1/profiles]
+
+### Healthcheck ping [GET /profiles/health/ping]
+
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+    
+            {
+                "pong": "2020-05-02 03:23:59"
+            }
+
+### Healthcheck status [GET /profiles/health/status]
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+    
+            {
+                "name": "profiles",
+                "stats": {
+                    "disk-space": "0"
+                },
+                "status": "profiles api microservice running"
+            }
+
+### Search profile by id [GET /{id}]
+    + Headers
+        
+        Authorization: Bearer ABC123
+
++ Attributes
+    + id (string) - Profile id firebase
+
++ Response 200 (application/json)
+
+            {
+                "message": "Profile found",
+                "results": [
+                    {
+                        "about": "Eu sou sombra e escuridão",
+                        "birth": {
+                            "date_birth": "04/12/1996",
+                            "datetime_birth": "1996-12-04T23:59:00+00:00",
+                            "place": {
+                                "city": "Porto de Pedras"
+                            },
+                            "time_birth": "23:59"
+                        },
+                        "configuration": null,
+                        "email": "dedeco@gmail.com",
+                        "genders": [
+                            "man"
+                        ],
+                        "goals": [
+                            "dating",
+                            "friendship"
+                        ],
+                        "id": "rBOrXKcLeCEcdt6CW0JD",
+                        "interested_in": [
+                            "series"
+                        ],
+                        "location": {
+                            "latitude": 37.3795433,
+                            "longitude": -122.093595
+                        },
+                        "looking_for": [
+                            "woman"
+                        ],
+                        "name": "Andre Araujo",
+                        "photo": [
+                            "https://firebasestorage.googleapis.com/v0/b/joinder.appspot.com/o/User%2F31c7a170-a0db-11ea-e6eb-331439423428?alt=media&token=f61236ee-f8b4-4e21-996c-3ccba0299d40"
+                        ],
+                        "sign": {
+                            "bot_response": "Your sun sign is Sagittarius",
+                            "sun_sign": "Sagittarius"
+                        },
+                        "status": "ACTIVE",
+                        "way_of_love": [
+                            "affirming_words"
+                        ]
+                    }
+                ]
+            }
+        
++ Response 404 (application/json)
+
+        {
+            "message": "Profile not found"
+        }
+        
++ Response 401 (application/json)
+
+        {
+            "message": "Expired token, Unauthorized"
+        }
+
+### Search profile [GET /]
+
+    + Headers
+
+        Authorization: Bearer ABC123
+
++ Attributes
+    + id (string) - Profile id firebase
+    + email (string) - Email 
+
++ Response 200 (application/json)
+
+        
+                {
+                    "message": "Profile found",
+                    "results": [
+                        {
+                            "about": "Eu sou sombra e escuridão",
+                            "birth": {
+                                "date_birth": "04/12/1996",
+                                "datetime_birth": "1996-12-04T23:59:00+00:00",
+                                "place": {
+                                    "city": "Porto de Pedras"
+                                },
+                                "time_birth": "23:59"
+                            },
+                            "configuration": null,
+                            "email": "dedeco@gmail.com",
+                            "genders": [
+                                "man"
+                            ],
+                            "goals": [
+                                "dating",
+                                "friendship"
+                            ],
+                            "id": "rBOrXKcLeCEcdt6CW0JD",
+                            "interested_in": [
+                                "series"
+                            ],
+                            "location": {
+                                "latitude": 37.3795433,
+                                "longitude": -122.093595
+                            },
+                            "looking_for": [
+                                "woman"
+                            ],
+                            "name": "Andre Araujo",
+                            "photo": [
+                                "https://firebasestorage.googleapis.com/v0/b/joinder.appspot.com/o/User%2F31c7a170-a0db-11ea-e6eb-331439423428?alt=media&token=f61236ee-f8b4-4e21-996c-3ccba0299d40"
+                            ],
+                            "sign": {
+                                "bot_response": "Your sun sign is Sagittarius",
+                                "sun_sign": "Sagittarius"
+                            },
+                            "status": "ACTIVE",
+                            "way_of_love": [
+                                "affirming_words"
+                            ]
+                        }
+                    ]
+                }
+        
++ Response 404 (application/json)
+
+        {
+            "message": "Profile not found"
+        }
+
++ Response 401 (application/json)
+
+        {
+            "message": "Expired token, Unauthorized"
+        }
+
+### Create profile [POST]
+
+    + Headers
+
+            Authorization: Bearer ABC123
+
++ Request (application/json)
+        
+    + Body
+
+            
+            {
+               "name":"Andre Araujo",
+               "email":"dedeco@gmail.com",
+               "location":{
+                  "latitude":37.3795433,
+                  "longitude":-122.093595
+               },
+               "birth":{
+                  "place":{
+                     "city":"Porto de Pedras"
+                  },
+                  "date_birth":"1996-12-04",
+                  "time_birth":"23:59:00"
+               },
+               "photo":[
+                  "https://firebasestorage.googleapis.com/v0/b/joinder.appspot.com/o/User%2F31c7a170-a0db-11ea-e6eb-331439423428?alt=media&token=f61236ee-f8b4-4e21-996c-3ccba0299d40"
+               ],
+               "about":"Eu sou sombra e escuridão",
+               "genders":[
+                  "man"
+               ],
+               "way_of_love":[
+                  "affirming_words"
+               ],
+               "goals":[
+                  "dating",
+                  "friendship"
+               ],
+               "interested_in":[
+                  "series"
+               ],
+               "looking_for":[
+                  "woman"
+               ]
+            }
+
++ Response 201 (application/json)
+
+
+    + Body
+
+            {
+                "message": "Profile created!",
+                "results": [
+                    {
+                        "id": "aU98K8SMBG2P4fTQzcmt"
+                    }
+                ]
+            }
+            
++ Response 400  (application/json)
+
+            {
+                "message": "No input data provided"
+            }
+            
++ Response 401 (application/json)
+
+            {
+                "message": "Expired token, Unauthorized"
+            }
+            
++ Response 409  (application/json)
+
+            {
+                "message": "There is a profile associated to this user (token)! So a new profile cannot be created and associate to this profile"
+            }
+
++ Response 409  (application/json)
+
+            {
+                       "message": "Profile already exists!"
+            }
++ Response 422 (application/json)
+
+            {
+                "message": {
+                    "name": [
+                        "Missing data for required field."
+                    ],
+                    "birth": [
+                        "Missing data for required field."
+                    ],
+                    "email": [
+                        "Missing data for required field."
+                    ],
+                    "location": [
+                        "Missing data for required field."
+                    ],
+                    "about": [
+                        "Missing data for required field."
+                    ]
+                }
+            }
+            
++ Response 422 (application/json)     
+
+            {
+                "message": {
+                    "interested_in": {
+                        "0": [
+                            "Must be one of: outdoor_activities, sports, fights, series, snacks, good_products, curiosities, books, dance, care, barbecue, flowers, romance, theater, corner, cleaning, games, gardening, poetry, arts, sunset, occult, museums, movies, travels, adventures, philosophies, economy, policy, dinner, talks, pubs, technologies, spirituality, music, magic_tale."
+                        ]
+                    }
+                }
+            }
+
+### Update partial profile [PATCH /{id}]
+
+    + Headers
+
+            Authorization: Bearer ABC123
+            
+    + Attributes
+        + id (string) - Profile id firebase
+
++ Request (application/json)
+        
+    + Body
+
+
+            {
+               "about":"Eu sou sombra e escuridão 3"
+            }
+
++ Response 204 (application/json)
+
++ Response 401 (application/json)
+    
+            {
+                "message": "Expired token, Unauthorized"
+            }
+
++ Response 404 (application/json)
+
+            {
+                "message": "Profile not found!"
+            }
+      
+### Update profile - new identifier (email) [PATCH /{id}/new-identifier]
+
+    + Headers
+
+            Authorization: Bearer ABC123
+            
+    + Attributes
+        + id (string) - Profile id firebase
+
++ Request (application/json)
+        
+    + Body
+
+
+            {
+               "email":"andre.araujo@strider.ag"
+            }
+
++ Response 204 (application/json)
+
++ Response 400 (application/json)
+    
+            {
+                "message": "ProfileDuplicatedError has been raised"
+            }
+
++ Response 400 (application/json)
+    
+            {"
+                "message": "ProfileStatusWasNotChanged has been raised
+            }
+
++ Response 401 (application/json)
+    
+            {
+                "message": "Expired token, Unauthorized"
+            }
+            
++ Response 404 (application/json)
+
+            {
+                "message": "Profile not found!"
+            }
+
++ Response 404 (application/json)
+
+            {
+                "message": "Profile could not been updated!"
+            }
+
+### Update profile - reactivate [PUT /{id}/reactivate ]
+
+    + Headers
+
+            Authorization: Bearer ABC123
+
+    + Attributes
+        + id (string) - Profile id firebase
+
+
++ Request (application/json)
+        
+    + Body
+
+
+            {
+               "name":"Andre de Sousa Araujo ",
+               "email":"carlamartinezribeiro1@gmail.com",
+               "location":{
+                  "latitude":37.3795433,
+                  "longitude":-122.093595
+               },
+               "birth":{
+                  "place":{
+                     "city":"Porto de Pedras"
+                  },
+                  "date_birth":"1996-12-04",
+                  "time_birth":"23:59:00"
+               },
+               "photo":[
+                  "https://firebasestorage.googleapis.com/v0/b/joinder.appspot.com/o/User%2F31c7a170-a0db-11ea-e6eb-331439423428?alt=media&token=f61236ee-f8b4-4e21-996c-3ccba0299d40"
+               ],
+               "about":"Eu sou sombra e escuridão",
+               "genders":[
+                  "man"
+               ],
+               "way_of_love":[
+                  "affirming_words"
+               ],
+               "goals":[
+                  "dating",
+                  "friendship"
+               ],
+               "interested_in":[
+                  "series"
+               ],
+               "looking_for":[
+                  "woman"
+               ]
+            }
+
++ Response 200 (application/json)
+
+
+        {
+            "message": "Profile updated",
+            "results": [
+                {
+                    "about": "Eu sou sombra e escuridão",
+                    "birth":{
+                      "place":{
+                         "city":"Porto de Pedras"
+                      },
+                      "date_birth":"1996-12-04",
+                      "time_birth":"23:59:00"
+                    },
+                    "email": "carlamartinezribeiro1@gmail.com",
+                    "genders": [
+                        "man"
+                    ],
+                    "goals": [
+                        "dating",
+                        "friendship"
+                    ],
+                    "id": "NaLEkw7UAF6t6lzUamIQ",
+                    "interested_in": [
+                        "series"
+                    ],
+                    "location": {
+                        "latitude": 37.3795433,
+                        "longitude": -122.093595
+                    },
+                    "looking_for": [
+                        "woman"
+                    ],
+                    "name": "Andre de Sousa Araujo ",
+                    "photo": [
+                        "https://firebasestorage.googleapis.com/v0/b/joinder.appspot.com/o/User%2F31c7a170-a0db-11ea-e6eb-331439423428?alt=media&token=f61236ee-f8b4-4e21-996c-3ccba0299d40"
+                    ],
+                    "way_of_love": [
+                        "affirming_words"
+                    ]
+                }
+            ]
+        }
+
++ Response 400 (application/json)
+
+            {
+                "message": "Email dedeco3@gmail.com already exists, please recovery your account"
+            }
+
++ Response 401 (application/json)
+
+            {
+                "message": "Expired token, Unauthorized"
+            }
+
++ Response 404 (application/json)
+
+            {
+                "message": "Profile not found!"
+            }
+
+### Update profile [PUT /{id} ]
+
+    + Headers
+
+            Authorization: Bearer ABC123
+
+    + Attributes
+        + id (string) - Profile id firebase
+
+
++ Request (application/json)
+        
+    + Body
+
+
+            {
+               "name":"Andre de Sousa Araujo ",
+               "email":"carlamartinezribeiro1@gmail.com",
+               "location":{
+                  "latitude":37.3795433,
+                  "longitude":-122.093595
+               },
+               "birth":{
+                  "place":{
+                     "city":"Porto de Pedras"
+                  },
+                  "date_birth":"1996-12-04",
+                  "time_birth":"23:59:00"
+               },
+               "photo":[
+                  "https://firebasestorage.googleapis.com/v0/b/joinder.appspot.com/o/User%2F31c7a170-a0db-11ea-e6eb-331439423428?alt=media&token=f61236ee-f8b4-4e21-996c-3ccba0299d40"
+               ],
+               "about":"Eu sou sombra e escuridão",
+               "genders":[
+                  "man"
+               ],
+               "way_of_love":[
+                  "affirming_words"
+               ],
+               "goals":[
+                  "dating",
+                  "friendship"
+               ],
+               "interested_in":[
+                  "series"
+               ],
+               "looking_for":[
+                  "woman"
+               ]
+            }
+
++ Response 200 (application/json)
+
+
+        {
+            "message": "Profile updated",
+            "results": [
+                {
+                    "about": "Eu sou sombra e escuridão",
+                    "birth":{
+                      "place":{
+                         "city":"Porto de Pedras"
+                      },
+                      "date_birth":"1996-12-04",
+                      "time_birth":"23:59:00"
+                    },
+                    "email": "carlamartinezribeiro1@gmail.com",
+                    "genders": [
+                        "man"
+                    ],
+                    "goals": [
+                        "dating",
+                        "friendship"
+                    ],
+                    "id": "NaLEkw7UAF6t6lzUamIQ",
+                    "interested_in": [
+                        "series"
+                    ],
+                    "location": {
+                        "latitude": 37.3795433,
+                        "longitude": -122.093595
+                    },
+                    "looking_for": [
+                        "woman"
+                    ],
+                    "name": "Andre de Sousa Araujo ",
+                    "photo": [
+                        "https://firebasestorage.googleapis.com/v0/b/joinder.appspot.com/o/User%2F31c7a170-a0db-11ea-e6eb-331439423428?alt=media&token=f61236ee-f8b4-4e21-996c-3ccba0299d40"
+                    ],
+                    "way_of_love": [
+                        "affirming_words"
+                    ]
+                }
+            ]
+        }
+
++ Response 400 (application/json)
+
+            {
+                "message": "Email dedeco3@gmail.com already exists, please recovery your account"
+            }
+
++ Response 401 (application/json)
+
+            {
+                "message": "Expired token, Unauthorized"
+            }
+
++ Response 404 (application/json)
+
+            {
+                "message": "Profile not found!"
+            }
+       
+### Delete profile [DELETE /{id}]
+
+    + Headers
+
+            Authorization: Bearer ABC123
+
++ Request (application/json)
+        
+    + Body
+
+
+            {
+               "reason": "Eu sou sombra e escuridão, e quero deletar meu profile"
+            }
+                    
++ Response 201 (application/json)
+
++ Response 401 (application/json)
+    
+            {
+                "message": "Expired token, Unauthorized"
+            }
+
++ Response 404 (application/json)
+
+            {
+                "message": "Profile not found!"
+            }
+            
++ Response 409 (application/json)
+
+            {
+                "message": "Profile not active anymore! Probably was deleted before"
+            }
+
+### Update profile configuration [POST /{id}/configuration]
+
+    + Headers
+
+            Authorization: Bearer ABC123
+
+    + Attributes
+        + id (string) - Profile id firebase
+        
++ Request (application/json)
+
+            {
+               "age": {
+                  "max": 40,
+                  "min": 50
+               },
+               "distance": {
+                  "max": 50,
+                  "min": 100
+               }
+            }
+
++ Response 200 (application/json)
+
+            {
+                "message": "Profile filter updated!",
+                "results": [
+                    {
+                        "id": "znlBY3rAmCJhhO4AcUbA"
+                    }
+                ]
+            }
+
++ Response 401 (application/json)
+    
+            {
+                "message": "Expired token, Unauthorized"
+            }
+
++ Response 404 (application/json)
+
+            {
+                "message": "Profile not found!"
+            }
+
+### Report bad behavior [POST /{id}/report]
+
+    + Headers
+
+            Authorization: Bearer ABC123
+
++ Request (application/json)
+        
+    + Body
+
+            
+            {
+               "type_reason" : "SPAM",
+               "message": "Usuário vendendo produtos pelo chat"
+            }
+
++ Response 200 (application/json)
+
+
+    + Body
+
+            {
+                "message": "Profile has been reported"
+            }
+                        
++ Response 400  (application/json)
+
+            {
+                "message": "No input data provided"
+            }
+            
++ Response 401 (application/json)
+
+            {
+                "message": "Expired token, Unauthorized"
+            }
+            
+
++ Response 422 (application/json)
+
+            {
+                "message": {
+                    "type_reason": [
+                        "Missing data for required field."
+                    ],
+                    "message": [
+                        "Missing data for required field."
+                    ]
+                }
+            }
+
+## User Collection [/api/v1/users]
+
+### Healthcheck ping [GET /users/health/ping]
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+    
+            {
+                "pong": "2020-05-02 03:23:59"
+            }
+
+### Healthcheck status [GET /users/health/status]
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+    
+            {
+                "name": "users",
+                "stats": {
+                    "disk-space": "0"
+                },
+                "status": "users api microservice running"
+            }
+
+### Search profile by user uid [GET /{uid}/profile]
+
+    + Headers
+            Authorization: Bearer ABC123
+
++ Attributes
+    + uid (string) - User UID firebase
+
++ Response 200 (application/json)
+
+        {
+            "message": "Profile found",
+            "results": [
+                {
+                    "way_of_love": [
+                        "affirming words"
+                    ],
+                    "birth": {
+                        "date_birth":"1996-12-04",
+                        "time_birth":"23:59:00"
+                        "place": {
+                            "city": "Belo Horizonte"
+                        }
+                    },
+                    "photo": [
+                        "http://www.stachastyles.com/wp-content/uploads/2018/02/amazing-freddie-mercury-freddie-mercury-hairstyle-20.jpg",
+                        "http://www.stachastyles.com/wp-content/uploads/2018/02/amazing-freddie-mercury-freddie-mercury-hairstyle-20.jpg"
+                    ],
+                    "id": "aU98K8SMBG2P4fTQzcmt",
+                    "location": {
+                        "longitude": -43.919604,
+                        "latitude": -19.911073
+                    },
+                    "mobile_number": 5531995446040,
+                    "genders": [
+                        "man"
+                    ],
+                    "name": "André de Sousa Araújo",
+                    "looking_for": [
+                        "transsexual woman",
+                        "woman"
+                    ],
+                    "about": "Olá, eu sou a André, comigo não tem coré coré, estou aqui para o que der e vier.",
+                    "email": "dedeco@gmail.com",
+                    "interested_in": [
+                        "sports",
+                        "music",
+                        "books",
+                        "trips",
+                        "food"
+                    ],
+                    "goals": [
+                        "dating",
+                        "friendship",
+                        "casual dating"
+                    ]
+                }
+            ]
+        }
+        
++ Response 404 (application/json)
+
+        {
+            "message": "User not found"
+        }
+        
++ Response 401 (application/json)
+
+        {
+            "message": "Expired token, Unauthorized"
+        }
+        
++ Response 401 (application/json)
+
+        {
+            "message": "Invalid token, Unauthorized"
+        }
+
+### Send feedback [POST /feedback]
+
+
+    + Headers
+
+            Authorization: Bearer ABC123
+
+
++ Request (application/json)
+        
+    + Body
+
+
+            {
+               "message":"Esse APP é bão!"
+            }
+                    
++ Response 204 (application/json)
+
++ Response 401 (application/json)
+    
+            {
+                "message": "Expired token, Unauthorized"
+            }
+
++ Response 404 (application/json)
+
+            {
+                "message": "Profile not found!"
+            }
+            
++ Response 409 (application/json)
+
+            {
+                "message": "Profile not active anymore! Probably was deleted before"
+            }
+            
+## User-Feedback Collection  [/api/v1/users/feedback]  
+            
+### Send feedback [POST]
+
+
+    + Headers
+
+            Authorization: Bearer ABC123
+
+
++ Request (application/json)
+        
+    + Body
+
+
+            {
+               "message":"Esse APP é bão!"
+            }
+                    
++ Response 204 (application/json)
+
++ Response 401 (application/json)
+    
+            {
+                "message": "Expired token, Unauthorized"
+            }
+
++ Response 404 (application/json)
+
+            {
+                "message": "Profile not found!"
+            }
+            
++ Response 409 (application/json)
+
+            {
+                "message": "Profile not active anymore! Probably was deleted before"
+            }
+          
+## User-Devices Collection  [/api/v1/users/devices]    
+            
+### Register user device [POST]
+
+
+    + Headers
+
+            Authorization: Bearer ABC123
+
+
++ Request (application/json)
+
+    + Body
+    
+                {
+                    "device_id": "eKIgizBKjU8dms56f2e9Vm:APA91bG2GD9tx_evKYMfeTFHdUXKMnWeQWLFiyctkEr3MfJjqY6kdruAslu28JFS0WTeeBuSCQlNgzi-6RaDiG9_drlpTbkdgqHRjENcxVKKpLh-YqQyxQLSCIjChHv9f1zq2Y5zerrO",
+                    "user_id": "0BVZWrL1cfgHCvHW9IdT",
+                    "os" : "iOS",
+                    "os_version": "13",
+                    "device_model":"iPhone 8"
+                }
+                
++ Response 200 (application/json)
+    
+                {
+                    "message": "User device registered",
+                    "results": [
+                        {
+                            "id": "jGuNqcimdu9EoQmeW1ZV"
+                        }
+                    ]
+                }
+                
++ Response 409 (application/json)
+
+                {
+                    "message": "User device already registered",
+                    "results": [
+                        {
+                            "id": "vwOrKh5luFQavnh8M6U2"
+                        }
+                    ]
+                }
+       
+## Content Collection [/api/v1/contents]
+
+### Healthcheck ping [GET /contents/health/ping]
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+    
+            {
+                "pong": "2020-05-02 03:23:59"
+            }
+
+### Healthcheck status [GET /contents/health/status]
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+    
+            {
+                "name": "content",
+                "stats": {
+                    "disk-space": "0"
+                },
+                "status": "content api microservice running"
+            }
+
+### Cities  [GET /cities?{lookup}]
+
+
++ Attributes
+    + lookup (string) - The partial query for cities name typed by the user, e.g. bel. Submitted parameter must not be under 3 chars.
+
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+                
+            {
+                "results": [
+                    "Belo Monte",
+                    "Belo Campo",
+                    "Ponto Belo",
+                    "Campos Belos",
+                    "São Luís de Montes Belos",
+                    "Belo Horizonte",
+                    "Belo Oriente",
+                    "Belo Vale",
+                    "Campo Belo",
+                    "Monte Belo",
+                    "Belo Jardim",
+                    "Monte Belo do Sul",
+                    "Campo Belo do Sul",
+                    "Porto Belo"
+                ]
+            }
+
+### Cities and states  [GET /states/cities]
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+                
+            {
+                "results": {
+                    "Brazil": {
+                        "Acre": [
+                            "Acrelândia",
+                            "Assis Brasil",
+                            "Brasiléia",
+                            "Bujari",
+                            "Capixaba",
+                            "Cruzeiro do Sul",
+                            "Epitaciolândia",
+                            "Feijó",
+                            "Jordão",
+                            "Mâncio Lima",
+                            "Manoel Urbano",
+                            "Marechal Thaumaturgo",
+                            "Plácido de Castro",
+                            "Porto Acre",
+                            "Porto Walter",
+                            "Rio Branco",
+                            "Rodrigues Alves",
+                            "Santa Rosa do Purus",
+                            "Sena Madureira",
+                            "Senador Guiomard",
+                            "Tarauacá",
+                            "Xapuri"
+                        ],
+                        "Alagoas": [
+                            "Água Branca",
+                            "Anadia",
+                            "Arapiraca",
+                            "Atalaia",
+                            "Barra de Santo Antônio",
+                            "Barra de São Miguel",
+                            "Batalha",
+                            "Belém",
+                            "Belo Monte",
+                            "Boca da Mata",
+                            "Branquinha",
+                            "Cacimbinhas",
+                            "Cajueiro",
+                            "Campestre",
+                            "Campo Alegre",
+                            "Campo Grande",
+                            "Canapi",
+                            "Capela",
+                            "Carneiros",
+                            "Chã Preta",
+                            "Coité do Nóia",
+                            "Colônia Leopoldina",
+                            "Coqueiro Seco",
+                            "Coruripe",
+                            "Craíbas",
+                            "Delmiro Gouveia",
+                            "Dois Riachos",
+                            "Estrela de Alagoas",
+                            "Feira Grande",
+                            "Feliz Deserto",
+                            "Flexeiras",
+                            "Girau do Ponciano",
+                            "Ibateguara",
+                            "Igaci",
+                            "Igreja Nova",
+                            "Inhapi",
+                            "Jacaré dos Homens",
+                            "Jacuípe",
+                            "Japaratinga",
+                            "Jaramataia",
+                            "Jequiá da Praia",
+                            "Joaquim Gomes",
+                            "Jundiá",
+                            "Junqueiro",
+                            "Lagoa da Canoa",
+                            "Limoeiro de Anadia",
+                            "Maceió",
+                            "Major Isidoro",
+                            "Mar Vermelho",
+                            "Maragogi",
+                            "Maravilha",
+                            "Marechal Deodoro",
+                            "Maribondo",
+                            "Mata Grande",
+                            "Matriz de Camaragibe",
+                            "Messias",
+                            "Minador do Negrão",
+                            "Monteirópolis",
+                            "Murici",
+                            "Novo Lino",
+                            "Olho d'Água das Flores",
+                            "Olho d'Água do Casado",
+                            "Olho d'Água Grande",
+                            "Olivença",
+                            "Ouro Branco",
+                            "Palestina",
+                            "Palmeira dos Índios",
+                            "Pão de Açúcar",
+                            "Pariconha",
+                            "Paripueira",
+                            "Passo de Camaragibe",
+                            "Paulo Jacinto",
+                            "Penedo",
+                            "Piaçabuçu",
+                            "Pilar",
+                            "Pindoba",
+                            "Piranhas",
+                            "Poço das Trincheiras",
+                            "Porto Calvo",
+                            "Porto de Pedras",
+                            "Porto Real do Colégio",
+                            "Quebrangulo",
+                            "Rio Largo",
+                            "Roteiro",
+                            "Santa Luzia do Norte",
+                            "Santana do Ipanema",
+                            "Santana do Mundaú",
+                            "São Brás",
+                            "São José da Laje",
+                            "São José da Tapera",
+                            "São Luís do Quitunde",
+                            "São Miguel dos Campos",
+                            "São Miguel dos Milagres",
+                            "São Sebastião",
+                            "Satuba",
+                            "Senador Rui Palmeira",
+                            "Tanque d'Arca",
+                            "Taquarana",
+                            "Teotônio Vilela",
+                            "Traipu",
+                            "União dos Palmares",
+                            "Viçosa"
+                        ],
+                        "Amazonas": [
+                            "Alvarães",
+                            "Amaturá",
+                            "Anamã",
+                            "Anori",
+                            "Apuí",
+                            "Atalaia do Norte",
+                            "Autazes",
+                            "Barcelos",
+                            "Barreirinha",
+                            "Benjamin Constant",
+                            "Beruri",
+                            "Boa Vista do Ramos",
+                            "Boca do Acre",
+                            "Borba",
+                            "Caapiranga",
+                            "Canutama",
+                            "Carauari",
+                            "Careiro",
+                            "Careiro da Várzea",
+                            "Coari",
+                            "Codajás",
+                            "Eirunepé",
+                            "Envira",
+                            "Fonte Boa",
+                            "Guajará",
+                            "Humaitá",
+                            "Ipixuna",
+                            "Iranduba",
+                            "Itacoatiara",
+                            "Itamarati",
+                            "Itapiranga",
+                            "Japurá",
+                            "Juruá",
+                            "Jutaí",
+                            "Lábrea",
+                            "Manacapuru",
+                            "Manaquiri",
+                            "Manaus",
+                            "Manicoré",
+                            "Maraã",
+                            "Maués",
+                            "Nhamundá",
+                            "Nova Olinda do Norte",
+                            "Novo Airão",
+                            "Novo Aripuanã",
+                            "Parintins",
+                            "Pauini",
+                            "Presidente Figueiredo",
+                            "Rio Preto da Eva",
+                            "Santa Isabel do Rio Negro",
+                            "Santo Antônio do Içá",
+                            "São Gabriel da Cachoeira",
+                            "São Paulo de Olivença",
+                            "São Sebastião do Uatumã",
+                            "Silves",
+                            "Tabatinga",
+                            "Tapauá",
+                            "Tefé",
+                            "Tonantins",
+                            "Uarini",
+                            "Urucará",
+                            "Urucurituba"
+                        ]
+                    }
+                }
+            }
+
+### Genders  [GET /genders]
+
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+                
+            {
+                "results": {
+                    "genders": {
+                        "pt_BR": [
+                            {
+                                "woman": "mulher"
+                            },
+                            {
+                                "man": "homem"
+                            },
+                            {
+                                "cisgender_woman": "mulher cisgênero"
+                            },
+                            {
+                                "cisgender_man": "homem cisgênero"
+                            },
+                            {
+                                "transsexual_womam": "mulher transexual"
+                            },
+                            {
+                                "transsexual_man": "homem transexual"
+                            },
+                            {
+                                "transvestite": "travesti"
+                            },
+                            {
+                                "transgender": "transgênero"
+                            },
+                            {
+                                "not_binary": "não binário"
+                            },
+                            {
+                                "queer": "queer"
+                            },
+                            {
+                                "intersex": "intersexo"
+                            },
+                            {
+                                "other": "outro"
+                            }
+                        ]
+                    }
+                }
+            }
+
+### Ways of love  [GET /way_of_loves]
+
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+                            
+            {
+                "results": {
+                    "ways_of_love": {
+                        "pt_BR": [
+                            {
+                                "affirming words": {
+                                    "title": "palavras de afirmação",
+                                    "description": "Você faz elogios como: “O jantar estava ótimo”, afirmações como “Acho que você faz isso super bem” e/ou incentivos como “Vai dar tudo certo”."
+                                }
+                            },
+                            {
+                                "time": {
+                                    "title": "qualidade de tempo",
+                                    "description": "Dedica um tempo exclusivo ainda que pequeno? Passeio, assistir televisão juntos"
+                                }
+                            },
+                            {
+                                "gifts": {
+                                    "title": "presentes",
+                                    "description": "Dá presentes? Não é o valor financeiro que importa, o amor pode ser expresso por meio de uma flor, um bilhetinho ou um bombom…"
+                                }
+                            },
+                            {
+                                "touch": {
+                                    "title": "toque físico",
+                                    "description": "Procura dar carinho, abraços, beijos, andar de mãos dadas?"
+                                }
+                            },
+                            {
+                                "service": {
+                                    "title": "gestos de serviço",
+                                    "description": "Gestos valem mais do que palavras. Lava uma louça, conserta algo que quebrou, ajuda com alguma coisa que você precisa?"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+
+### Goals  [GET /goals]
+
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+                            
+            {
+                "results": {
+                    "goals": {
+                        "pt_BR": [
+                            {
+                                "dating": "namoro"
+                            },
+                            {
+                                "friendship": "amizade"
+                            },
+                            {
+                                "casual_dating": "pegaçao"
+                            }
+                        ]
+                    }
+                }
+            }
+
+### Looking For  [GET /looking_for]
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+            
+            {
+                "results": {
+                    "looking_for": {
+                        "pt_BR": [
+                            {
+                                "woman": "mulher"
+                            },
+                            {
+                                "man": "homem"
+                            },
+                            {
+                                "cisgender_woman": "mulher cisgênero"
+                            },
+                            {
+                                "cisgender_man": "homem cisgênero"
+                            },
+                            {
+                                "transsexual_womam": "mulher transexual"
+                            },
+                            {
+                                "transsexual_man": "homem transexual"
+                            },
+                            {
+                                "transvestite": "travesti"
+                            },
+                            {
+                                "transgender": "transgênero"
+                            },
+                            {
+                                "not_binary": "não binário"
+                            },
+                            {
+                                "queer": "queer"
+                            },
+                            {
+                                "intersex": "intersexo"
+                            },
+                            {
+                                "other": "outro"
+                            }
+                        ]
+                    }
+                }
+            }
+     
+            
+### Privacy  [GET /privacy]
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+            
+        {
+            "results": "Privacy"
+        }
+
+### Terms of use  [GET /terms_of_use]
+
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+                            
+        {
+            "results": "Terms of use"
+        }
+            
+## Chat Collection [/api/v1/chats/]
+
+### Search profiles by ids [POST]
+
+    + Headers
+
+            Authorization: Bearer ABC123
+
++ Request (application/json)
+        
+    + Body
+
+            {
+              "profiles": ["ERqdzpAjtsRIR6H0v6cg"]
+            }
+
++ Response 200 (application/json)
+
+            {
+                "message": "Chats profiles",
+                "results": [
+                    [
+                        {
+                            "photo": [
+                                "https://firebasestorage.googleapis.com/v0/b/joinder.appspot.com/o/User%2F31c7a170-a0db-11ea-e6eb-331439423428?alt=media&token=f61236ee-f8b4-4e21-996c-3ccba0299d40"
+                            ],
+                            "name": "Andre Araujo"
+                        }
+                    ]
+                ]
+            }
+            
+
++ Response 400 (application/json)
+
+            {
+                "message": "No input data provided"
+            }
+            
+            
++ Response 422 (application/json)
+
+            {
+                "message": {
+                    "other": [
+                        "Unknown field."
+                    ]
+                }
+            }
