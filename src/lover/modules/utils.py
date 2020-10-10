@@ -28,7 +28,7 @@ def get_paginated_list(schema, results, url, parameters, start, limit):
 
 
 def get_parameters_url(args):
-    parameters = '&'.join([str(k) + '=' + str(v) for k, v in args.items()])
+    parameters = '&'.join([str(k) + '=' + str(v) for k, v in args.items() if k not in ["start", "limit"]])
     return parameters
 
 
@@ -38,8 +38,8 @@ def get_parsed_parameters(parser):
                         help='Inform your profile id to search lovers for you')
     parser.add_argument('start',
                         type=int,
-                        help='Inform which number page start')
+                        help='Inform start element to pagination')
     parser.add_argument('limit',
                         type=int,
-                        help='Inform limit')
+                        help='Inform quantity of element per page')
     return parser.parse_args()

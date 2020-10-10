@@ -62,6 +62,20 @@
           "serviceId": "joinder-chats",
           "region": "us-central1"
         }
+      },
+      {
+        "source": "/lovers/health/{ping,status}",
+        "run": {
+          "serviceId": "joinder-lovers",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/v1/lovers{,/**}",
+        "run": {
+          "serviceId": "joinder-lovers",
+          "region": "us-central1"
+        }
       }
     ]
   }
