@@ -1,8 +1,7 @@
+from datetime import date
 from random import randrange
 
 from marshmallow import Schema, fields
-
-from datetime import date
 
 
 def calculate_age(born):
@@ -10,7 +9,7 @@ def calculate_age(born):
     return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
 
-def calculate_distance(latitude, longitude):
+def calculate_distance(origin):
     return 10
 
 
@@ -42,7 +41,6 @@ class ProfileCardsSchema(Schema):
     looking_for = fields.List(fields.Str())
     state_or_province = fields.Function(lambda obj: state_or_province(obj.address))
     city = fields.Function(lambda obj: get_city(obj.address))
-    distance = fields.Function(lambda obj: calculate_distance(
-        obj.location.latitude,
-        obj.location.longitude
-    ))
+    distance = fields.Function(lambda obj: calculate_distance(obj.location))
+
+
