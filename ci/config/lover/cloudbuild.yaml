@@ -6,4 +6,4 @@ steps:
   # Deploy container image to Cloud Run
 - name: "gcr.io/cloud-builders/gcloud"
   args: ['beta', 'run', 'deploy', 'joinder-lovers', '--image', 'gcr.io/$PROJECT_ID/joinder.lovers', '--region',
-         'us-central1', '--allow-unauthenticated', '--platform', 'managed', '--memory', '1Gi']
+         'us-central1', '--allow-unauthenticated', '--platform', 'managed', '--memory', '2Gi']

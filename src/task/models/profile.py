@@ -105,6 +105,7 @@ class Profile(models.Model):
     interested_in = models.ListField()
     looking_for = models.ListField()
     sign = models.MapField(blank=True)
+    address = models.MapField(blank=True)
 
     status = models.TextField()
 
@@ -212,6 +213,11 @@ class ProfileService:
         self.profile.save()
         return self.profile
 
+    def update_address(self, address):
+        self.profile.address = address
+        self.profile.save()
+        return self.profile
+
     def update_status(self, status):
         if self.profile.status == status:
             raise ProfileStatusWasNotChanged("The profile status can not be changed because is already is {0}". \
@@ -271,3 +277,23 @@ class ProfileHistoryService:
     def save(self):
         self.profile_history.save()
         return self.profile_history
+
+
+import googlemaps
+
+gmaps = googlemaps.Client(key='AIzaSyBAlCaYMw0h6OYJ0CTXWZC11KH-yPlLvTs')
+
+
+class AddressService:
+
+    def __init__(self, profile):
+        self.profile = profile
+        self.reverse_geocode_result = gmaps.reverse_geocode(
+            (self.profile.location.latitude
+             , self.profile.location.longitude))
+
+    def generate_address(self):
+        address = {}
+        for item in self.reverse_geocode_result[0].get('address_components'):
+            address[item.get('types')[0]] = item.get('long_name')
+        return address

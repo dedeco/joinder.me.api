@@ -3,7 +3,7 @@ from datetime import datetime
 
 from flask import current_app as app
 
-from src.task.models.profile import ProfileService
+from src.task.models.profile import ProfileService, AddressService
 from src.task.models.sing import SignService
 from src.task.models.user import UserService, UserFirebaseService, UserFeedbackService, UserDeviceService
 
@@ -32,6 +32,8 @@ def update_profile_and_user(id, uid, data):
         )
     if data.get("birth"):
         _ = update_sign_profile(profile)
+    if data.get("location"):
+        _ = update_address(profile)
     return result, profile
 
 
@@ -141,6 +143,20 @@ def update_sign_profile(profile):
     }
 
 
+def update_address(profile):
+    address = AddressService(profile=profile).generate_address()
+    logging.debug("geocode api return: ", address)
+    profile = ProfileService(profile=profile).update_address(address)
+    return {
+        "message": "Address updated on profile!",
+        "results": [
+            {
+                "profile_id": profile.id
+            }
+        ]
+    }
+
+
 def delete_profile(reason, uid, id):
     profile = UserService().get_profile_by_user_uid(uid)
     ProfileService(profile=profile).delete(reason, id)
@@ -154,6 +170,7 @@ def create_profile_user(user_id, data):
     _, profile = create_profile(data)
     result = associate_profile_to_user(user, profile)
     _ = update_sign_profile(profile)
+    _ = update_address(profile)
     _ = send_user_message_confirm_email(user.uid)
     return result
 
