@@ -32,7 +32,7 @@ def get_parameters_url(args):
     return parameters
 
 
-def get_parsed_parameters(parser):
+def get_parsed_parameters_for_deck(parser):
     parser.add_argument('id',
                         type=str,
                         help='Inform your profile id to search lovers for you')
@@ -42,4 +42,11 @@ def get_parsed_parameters(parser):
     parser.add_argument('limit',
                         type=int,
                         help='Inform quantity of element per page')
+    return parser.parse_args()
+
+
+def get_parsed_parameters(parser):
+    parser.add_argument('match_id',
+                        type=str,
+                        help='Inform your profile match id to get details ')
     return parser.parse_args()

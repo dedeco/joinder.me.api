@@ -9,14 +9,15 @@ from matchbox import queries
 
 from src.microservices.authentication import jwt_required_gcp
 from src.task.models.profile import ProfileDuplicatedError, ProfileService, ProfileNotActive, ProfileStatus, \
-    ProfileStatusWasNotChanged
-from src.task.models.user import UserDuplicatedError
+    ProfileStatusWasNotChanged, Profile
+from src.task.models.user import UserDuplicatedError, UserService
 from src.task.tasks import create_profile_user, delete_profile, update_profile_and_user, \
-    update_filter_in_profile, update_email_profile_and_user, update_status, save_profile_report, remove_user_and_profile
+    update_filter_in_profile, update_email_profile_and_user, update_status, save_profile_report, \
+    remove_user_and_profile, save_profile_on_fridge, get_profiles_on_fridge, delete_profile_on_fridge
 from src.task.models.sing import SignApiError, SignApiPaymentError
 from . import profile_blueprint
 from .schema import ProfileSchema, ProfileUpdateSchema, ProfileFilter, ProfileDetailSchema, ProfileUpdateEmailSchema, \
-    ProfileReportSchema
+    ProfileReportSchema, ProfileOnFridgeSchema, ProfileOnFridgeListSchema, ProfileResumeSchema
 from .utils import get_parsed_parameters
 
 profile_restfull = Api(profile_blueprint)
@@ -317,8 +318,65 @@ class ProfileReportResource(Resource):
             , HTTPStatus.OK
 
 
+class ProfileFridgeResource(Resource):
+
+    @cross_origin()
+    @jwt_required_gcp
+    def get(self):
+        try:
+            user = UserService().get_by_uid(g.user_firebase.uid)
+        except queries.error.DocumentDoesNotExists:
+            return {
+                       "message": "There is nobody on Fridge"
+                   }, HTTPStatus.NOT_FOUND
+
+        profiles, _ = get_profiles_on_fridge(user)
+
+        schema = ProfileResumeSchema(many=True)
+
+        return {
+                   "message": "Profiles on fridge",
+                   "results":
+                       schema.dump(profiles)
+               } \
+            , HTTPStatus.OK
+
+    @cross_origin()
+    @jwt_required_gcp
+    def delete(self):
+        json_data = request.get_json()
+        if not json_data:
+            return {"message": "No input data provided"}, HTTPStatus.BAD_REQUEST
+        try:
+            data = ProfileOnFridgeSchema().load(json_data)
+        except ValidationError as error:
+            return abort(HTTPStatus.UNPROCESSABLE_ENTITY, message=error.messages)
+
+        result = delete_profile_on_fridge(g.user_firebase.uid, data)
+
+        return result \
+            , HTTPStatus.NO_CONTENT
+
+    @cross_origin()
+    @jwt_required_gcp
+    def post(self):
+        json_data = request.get_json()
+        if not json_data:
+            return {"message": "No input data provided"}, HTTPStatus.BAD_REQUEST
+        try:
+            data = ProfileOnFridgeSchema().load(json_data)
+        except ValidationError as error:
+            return abort(HTTPStatus.UNPROCESSABLE_ENTITY, message=error.messages)
+
+        result = save_profile_on_fridge(g.user_firebase.uid, data)
+
+        return result \
+            , HTTPStatus.OK
+
+
 profile_restfull.add_resource(ProfileResource, "/", '/<id>')
 profile_restfull.add_resource(ProfileFilterResource, "/<id>/configuration")
 profile_restfull.add_resource(ProfileNewIdentifierResource, '/<id>/new-identifier')
 profile_restfull.add_resource(ProfileReactivateResource, '/<id>/reactivate')
 profile_restfull.add_resource(ProfileReportResource, '/<id>/report')
+profile_restfull.add_resource(ProfileFridgeResource, '/fridge')

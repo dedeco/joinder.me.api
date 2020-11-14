@@ -92,6 +92,16 @@ class ProfileStatus(Enum):
     DELETED = 4
 
 
+class ProfilesOnFridge(models.Model):
+    profiles_on_fridge = models.ListField()
+
+    class Meta:
+        collection_name = "profiles-on-fridge"
+
+    def __unicode__(self):
+        return self.id
+
+
 class Profile(models.Model):
     name = models.TextField()
     email = models.TextField()
@@ -110,6 +120,7 @@ class Profile(models.Model):
     status = models.TextField()
 
     configuration = models.ReferenceField(ProfileConfiguration)
+    fridge = models.ReferenceField(ProfilesOnFridge)
 
     class Meta:
         collection_name = "profiles"
@@ -266,6 +277,32 @@ class ProfileService:
     @staticmethod
     def remove(id):
         Profile.objects.get(id=id).delete()
+
+    def put_profile_on_fridge(self, profile_id):
+        if self.profile.fridge:
+            fridge = self.profile.fridge
+            if profile_id not in fridge.profiles_on_fridge:
+                fridge.profiles_on_fridge.append(profile_id)
+                self._save_fridge(fridge)
+        else:
+            fridge = ProfilesOnFridge()
+            profiles = [profile_id, ]
+            fridge.profiles_on_fridge = profiles
+            self._save_fridge(fridge)
+        return self.profile
+
+    def delete_profile_on_fridge(self, profile_id):
+        if self.profile.fridge:
+            fridge = self.profile.fridge
+            if profile_id in fridge.profiles_on_fridge:
+                fridge.profiles_on_fridge.remove(profile_id)
+                self._save_fridge(fridge)
+        return self.profile
+
+    def _save_fridge(self, fridge):
+        fridge.save()
+        self.profile.fridge = fridge
+        self.profile.save()
 
 
 class ProfileHistoryService:

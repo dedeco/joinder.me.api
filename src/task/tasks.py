@@ -287,3 +287,38 @@ def save_profile_report(id, data):
     return {
         "message": "Profile has been reported",
     }
+
+
+def save_profile_on_fridge(uid, data):
+    user = UserService().get_by_uid(uid)
+    profile = ProfileService(
+        profile=user.profile
+    ).put_profile_on_fridge(
+        data.get("profile_id")
+    )
+    return {
+        "message": "Profile saved on fridge"
+    }
+
+
+def delete_profile_on_fridge(uid, data):
+    user = UserService().get_by_uid(uid)
+    profile = ProfileService(
+        profile=user.profile
+    ).delete_profile_on_fridge(
+        data.get("profile_id")
+    )
+    return {
+        "message": "Profile deleted on fridge"
+    }
+
+
+def get_profiles_on_fridge(user):
+    profiles = []
+    for frozen_id in user.profile.fridge.profiles_on_fridge:
+        profiles.append(
+            ProfileService().get_by_id(frozen_id)
+        )
+    return profiles, {
+        "message": "Profiles on fridge"
+    }

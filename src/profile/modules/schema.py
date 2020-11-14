@@ -1,6 +1,6 @@
 import time
 
-from marshmallow import Schema, fields, validate, post_load
+from marshmallow import Schema, fields, validate, post_load, validates, ValidationError
 import datetime
 
 
@@ -221,3 +221,16 @@ class ProfileResumeSchema(Schema):
 class ProfileReportSchema(Schema):
     type_reason = fields.Str()
     message = fields.Str()
+
+
+class ProfileOnFridgeSchema(Schema):
+    profile_id = fields.Str(required=True)
+
+    @validates("profile_id")
+    def validate_profile(self, value):
+        if len(value) == 0:
+            raise ValidationError("Profile id must not be null.")
+
+
+class ProfileOnFridgeListSchema(Schema):
+    profiles_on_fridge = fields.List(fields.Str())
