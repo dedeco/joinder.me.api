@@ -367,8 +367,12 @@ class ProfileFridgeResource(Resource):
             data = ProfileOnFridgeSchema().load(json_data)
         except ValidationError as error:
             return abort(HTTPStatus.UNPROCESSABLE_ENTITY, message=error.messages)
-
-        result = save_profile_on_fridge(g.user_firebase.uid, data)
+        try:
+            result = save_profile_on_fridge(g.user_firebase.uid, data)
+        except queries.error.DocumentDoesNotExists:
+            return {
+                       "message": "There is profiles doesn't exist, so you can not put on fridge"
+                   }, HTTPStatus.NOT_FOUND
 
         return result \
             , HTTPStatus.OK

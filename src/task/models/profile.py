@@ -174,6 +174,10 @@ class ProfileService:
         self.profile = Profile.objects.get(**args)
         return self.profile
 
+    @staticmethod
+    def profile_exists(profile_id):
+        return True if Profile.objects.get(id=profile_id) else False
+
     def get_by_id(self, id):
         self.profile = Profile.objects.get(id=id)
         if self.profile.status != ProfileStatus.ACTIVE.name:
@@ -279,16 +283,17 @@ class ProfileService:
         Profile.objects.get(id=id).delete()
 
     def put_profile_on_fridge(self, profile_id):
-        if self.profile.fridge:
-            fridge = self.profile.fridge
-            if profile_id not in fridge.profiles_on_fridge:
-                fridge.profiles_on_fridge.append(profile_id)
+        if self.profile_exists(profile_id):
+            if self.profile.fridge:
+                fridge = self.profile.fridge
+                if profile_id not in fridge.profiles_on_fridge:
+                    fridge.profiles_on_fridge.append(profile_id)
+                    self._save_fridge(fridge)
+            else:
+                fridge = ProfilesOnFridge()
+                profiles = [profile_id, ]
+                fridge.profiles_on_fridge = profiles
                 self._save_fridge(fridge)
-        else:
-            fridge = ProfilesOnFridge()
-            profiles = [profile_id, ]
-            fridge.profiles_on_fridge = profiles
-            self._save_fridge(fridge)
         return self.profile
 
     def delete_profile_on_fridge(self, profile_id):

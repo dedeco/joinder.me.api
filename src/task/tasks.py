@@ -315,10 +315,11 @@ def delete_profile_on_fridge(uid, data):
 
 def get_profiles_on_fridge(user):
     profiles = []
-    for frozen_id in user.profile.fridge.profiles_on_fridge:
-        profiles.append(
-            ProfileService().get_by_id(frozen_id)
-        )
+    if user.profile.fridge:
+        for frozen_id in user.profile.fridge.profiles_on_fridge:
+            profiles.append(
+                ProfileService().get_by_id(frozen_id)
+            )
     return profiles, {
         "message": "Profiles on fridge"
     }
