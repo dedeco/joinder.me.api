@@ -5,12 +5,12 @@ from flask_restful import Resource, Api, reqparse
 from matchbox import queries
 
 from src.lover.modules import lover_blueprint
-from src.lover.modules.schema import ProfileCardsSchema
+from src.lover.modules.schema import LoverCardSchema
 from src.lover.modules.utils import get_paginated_list, get_parameters_url, get_parsed_parameters_for_deck, \
     get_parsed_parameters
 from src.microservices.authentication import jwt_required_gcp
-from src.task.models.lover import LoverService
 from src.task.models.user import UserService
+from src.task.models.lover import LoversService
 
 lover_restfull = Api(lover_blueprint)
 
@@ -22,11 +22,9 @@ class LoverDeckResource(Resource):
         args = get_parsed_parameters_for_deck(reqparse.RequestParser(bundle_errors=True))
         args = {k: v for k, v in args.items() if v is not None}
         user = UserService().get_by_uid(g.user_firebase.uid)
-        lovers = LoverService(user.profile.id).get_lovers()
-        schema = ProfileCardsSchema(many=True)
+        lovers = LoversService(user.profile).save_lovers()
         return get_paginated_list(
-            schema,
-            lovers,
+            lovers.lovers,
             url_for('lover.loverdeckresource'),
             get_parameters_url(args),
             start=args.get('start'),
@@ -43,12 +41,12 @@ class LoverResource(Resource):
         user = UserService().get_by_uid(g.user_firebase.uid)
         if args.get("match_id"):
             try:
-                lover = LoverService(user.profile.id).get_lover_by_match_id(args.get("match_id"))
+                lover = LoversService(user.profile).get_lover_by_match_id(args.get("match_id"))
             except queries.error.DocumentDoesNotExists:
                 return {
                            "message": "Profile match id not found"
                        }, HTTPStatus.NOT_FOUND
-            schema = ProfileCardsSchema()
+            schema = LoverCardSchema()
             return {
                 "results": schema.dump(lover)
             }

@@ -4,6 +4,8 @@ from enum import Enum
 from matchbox import models, queries
 from matchbox import models as fsm
 
+REPORT = "REPORT"
+
 
 class ProfileDuplicatedError(Exception):
     def __init__(self, *args):
@@ -47,7 +49,7 @@ class ProfileStatusWasNotChanged(Exception):
             return 'ProfileStatusWasNotChanged has been raised'
 
 
-class ProfileUpdateNotAuthorized(object):
+class ProfileUpdateNotAuthorized(Exception):
     def __init__(self, *args):
         if args:
             self.message = args[0]
@@ -72,11 +74,13 @@ class ProfileConfiguration(models.Model):
 class ProfileAction(Enum):
     ACCOUNT_DELETED = 1
     ACCOUNT_REACTIVATED = 2
-    ACCOUNT_REPORT_BAD_BEHAVIOR = 3
+    ACCOUNT_FREEZE = 3
+    ACCOUNT_BAD_BEHAVIOR = 4
 
 
 class ProfileHistory(models.Model):
-    profile_id = models.TextField()
+    reported_by_profile_id = models.TextField()
+    target_profile_id = models.TextField()
     action = models.TextField()
     description = models.MapField()
     created_at = fsm.TimeStampField()
@@ -239,13 +243,14 @@ class ProfileService:
                                              format(status))
         self.profile.status = status
 
+        profile_history_service = ProfileHistoryService(
+            target_profile_id=self.profile.id,
+            reported_by_profile_id=self.profile.id,
+            action=ProfileAction.ACCOUNT_REACTIVATED.name,
+            description={"message": "Login after have deleted."},
+            created_at=datetime.utcnow(),
+        )
         if status == ProfileStatus.ACTIVE.name:
-            profile_history_service = ProfileHistoryService(
-                profile_id=self.profile.id,
-                action=ProfileAction.ACCOUNT_REACTIVATED.name,
-                description={"message": "Login after have deleted."},
-                created_at=datetime.utcnow(),
-            )
             profile_history_service.save()
 
         self.profile.save()
@@ -256,7 +261,8 @@ class ProfileService:
             raise ProfileUpdateNotAuthorized("You are trying operation in someone else profile ({0})". \
                                              format(id))
         profile_history_service = ProfileHistoryService(
-            profile_id=id,
+            target_profile_id=self.profile.id,
+            reported_by_profile_id=self.profile.id,
             action=ProfileAction.ACCOUNT_DELETED.name,
             description={"message": reason},
             created_at=datetime.utcnow(),
@@ -266,17 +272,22 @@ class ProfileService:
         self.profile.status = ProfileStatus.DELETED.name
         self.profile.save()
 
-    def report_bad_behavior(self, reason, id):
+    def report_behavior(self, user, data, id):
         if self.profile.id != id:
             raise ProfileUpdateNotAuthorized("You are trying operation in someone else profile ({0})". \
                                              format(id))
         profile_history_service = ProfileHistoryService(
-            profile_id=id,
-            action=ProfileAction.ACCOUNT_REPORT_BAD_BEHAVIOR.name,
-            description=reason,
+            reported_by_profile_id=user.profile.id,
+            target_profile_id=id,
+            action=self._set_action(data),
+            description=data,
             created_at=datetime.utcnow(),
         )
         profile_history_service.save()
+
+    @staticmethod
+    def _set_action(data):
+        return ProfileAction.ACCOUNT_BAD_BEHAVIOR.name if data.get("type") == REPORT else ProfileAction.ACCOUNT_FREEZE.name
 
     @staticmethod
     def remove(id):

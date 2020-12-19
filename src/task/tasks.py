@@ -6,6 +6,9 @@ from flask import current_app as app
 from src.task.models.profile import ProfileService, AddressService
 from src.task.models.sing import SignService
 from src.task.models.user import UserService, UserFirebaseService, UserFeedbackService, UserDeviceService
+from src.task.models.lover import LoversService
+
+REPORT = "REPORT"
 
 
 def create_profile(data):
@@ -274,16 +277,17 @@ def save_user_device(data):
         }
 
 
-def save_profile_report(id, data):
+def save_profile_report(user, id, data):
     profile = ProfileService().get_by_id_all_status(id)
-    profile = ProfileService(profile=profile).report_bad_behavior(data, profile.id)
-    from src.user.modules.utils import send_message_report_bad_behavior
-    result = send_message_report_bad_behavior(
-        app.config.get("REPORT_TO_EMAIL"),
-        app.config.get("REPORT_TO_NAME"),
-        data.get("type_reason"),
-        data.get("message")
-    )
+    _ = ProfileService(profile=profile).report_behavior(user, data, profile.id)
+    if data.get("type") == REPORT:
+        from src.user.modules.utils import send_message_report_bad_behavior
+        _ = send_message_report_bad_behavior(
+            app.config.get("REPORT_TO_EMAIL"),
+            app.config.get("REPORT_TO_NAME"),
+            data.get("type_reason"),
+            data.get("message")
+        )
     return {
         "message": "Profile has been reported",
     }
@@ -322,4 +326,11 @@ def get_profiles_on_fridge(user):
             )
     return profiles, {
         "message": "Profiles on fridge"
+    }
+
+
+def save_lovers(profile, lovers):
+    LoversService(profile, lovers)
+    return {
+        "message": "Lovers saved!"
     }

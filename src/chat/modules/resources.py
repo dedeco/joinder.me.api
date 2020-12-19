@@ -1,19 +1,22 @@
 from http import HTTPStatus
 
-from flask import request
+from flask import request, g
 from flask_restful import Resource, Api, abort
 from marshmallow import ValidationError
 
+from src.microservices.authentication import jwt_required_gcp
 from src.chat.modules.schema import ProfilesIdsSchema
 from src.profile.modules.schema import ProfileResumeSchema
 from src.chat.modules import chat_blueprint
 from src.task.models.chat import ChatService
+from src.task.models.user import UserService
 
 chat_restfull = Api(chat_blueprint)
 
 
 class ChatResource(Resource):
 
+    @jwt_required_gcp
     def post(self):
         json_data = request.get_json()
         if not json_data:
@@ -25,7 +28,9 @@ class ChatResource(Resource):
 
         schema = ProfileResumeSchema()
 
-        profiles = ChatService().get_list_profiles(data.get('profiles'))
+        user = UserService().get_by_uid(g.user_firebase.uid)
+
+        profiles = ChatService(user.profile).get_list_profiles(data.get('profiles'))
 
         return {
                    "message": "Chats profiles",

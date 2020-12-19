@@ -27,7 +27,7 @@ def state_or_province(address):
         return "Not informed"
 
 
-class ProfileCardsSchema(Schema):
+class LoverCardSchema(Schema):
     id = fields.Str()
     age = fields.Function(lambda obj: calculate_age(obj.birth.get("datetime_birth")))
     sign = fields.Function(lambda obj: obj.sign.get("sun_sign"))
@@ -42,5 +42,3 @@ class ProfileCardsSchema(Schema):
     state_or_province = fields.Function(lambda obj: state_or_province(obj.address))
     city = fields.Function(lambda obj: get_city(obj.address))
     distance = fields.Function(lambda obj: calculate_distance(obj.location))
-
-

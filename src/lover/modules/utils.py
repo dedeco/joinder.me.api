@@ -1,4 +1,4 @@
-def get_paginated_list(schema, results, url, parameters, start, limit):
+def get_paginated_list(results, url, parameters, start, limit):
     start = int(start)
     limit = int(limit)
     count = len(results)
@@ -23,7 +23,7 @@ def get_paginated_list(schema, results, url, parameters, start, limit):
         obj['next'] = url + \
                       '?start=%d&limit=%d' % (start_copy, limit) \
                       + '&' + parameters
-    obj['results'] = schema.dump(results[(start - 1):(start - 1 + limit)])
+    obj['results'] = results[(start - 1):(start - 1 + limit)]
     return obj
 
 
@@ -33,9 +33,6 @@ def get_parameters_url(args):
 
 
 def get_parsed_parameters_for_deck(parser):
-    parser.add_argument('id',
-                        type=str,
-                        help='Inform your profile id to search lovers for you')
     parser.add_argument('start',
                         type=int,
                         help='Inform start element to pagination')

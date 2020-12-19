@@ -9,7 +9,7 @@ from matchbox import queries
 
 from src.microservices.authentication import jwt_required_gcp
 from src.task.models.profile import ProfileDuplicatedError, ProfileService, ProfileNotActive, ProfileStatus, \
-    ProfileStatusWasNotChanged, Profile
+    ProfileStatusWasNotChanged, Profile, ProfileUpdateNotAuthorized
 from src.task.models.user import UserDuplicatedError, UserService
 from src.task.tasks import create_profile_user, delete_profile, update_profile_and_user, \
     update_filter_in_profile, update_email_profile_and_user, update_status, save_profile_report, \
@@ -218,6 +218,8 @@ class ProfileResource(Resource):
             return {"message": "Profile not found!"}, HTTPStatus.NOT_FOUND
         except ProfileNotActive:
             return {"message": "Profile not active anymore! Probably was deleted before"}, HTTPStatus.CONFLICT
+        except ProfileUpdateNotAuthorized as error:
+            return {"message": error.message}, HTTPStatus.UNAUTHORIZED
         if result:
             return {}, HTTPStatus.NO_CONTENT
 
@@ -312,7 +314,12 @@ class ProfileReportResource(Resource):
         except ValidationError as error:
             return abort(HTTPStatus.UNPROCESSABLE_ENTITY, message=error.messages)
 
-        result = save_profile_report(id, data)
+        try:
+            user = UserService().get_by_uid(g.user_firebase.uid)
+        except queries.error.DocumentDoesNotExists as error:
+            return abort(HTTPStatus.UNPROCESSABLE_ENTITY, message=error.messages)
+
+        result = save_profile_report(user, id, data)
 
         return result \
             , HTTPStatus.OK

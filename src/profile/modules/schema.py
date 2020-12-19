@@ -216,9 +216,11 @@ class ProfileResumeSchema(Schema):
     id = fields.Str(dump_only=True)
     name = fields.Str()
     photo = fields.List(fields.Url())
+    sign = fields.Nested(SingSchema, required=True)
 
 
 class ProfileReportSchema(Schema):
+    type = fields.Str()
     type_reason = fields.Str()
     message = fields.Str()
 
