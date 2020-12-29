@@ -9,15 +9,15 @@ from matchbox import queries
 
 from src.microservices.authentication import jwt_required_gcp
 from src.task.models.profile import ProfileDuplicatedError, ProfileService, ProfileNotActive, ProfileStatus, \
-    ProfileStatusWasNotChanged, Profile, ProfileUpdateNotAuthorized
+    ProfileStatusWasNotChanged, ProfileUpdateNotAuthorized
+from src.task.models.sing import SignApiError, SignApiPaymentError
 from src.task.models.user import UserDuplicatedError, UserService
 from src.task.tasks import create_profile_user, delete_profile, update_profile_and_user, \
     update_filter_in_profile, update_email_profile_and_user, update_status, save_profile_report, \
     remove_user_and_profile, save_profile_on_fridge, get_profiles_on_fridge, delete_profile_on_fridge
-from src.task.models.sing import SignApiError, SignApiPaymentError
 from . import profile_blueprint
 from .schema import ProfileSchema, ProfileUpdateSchema, ProfileFilter, ProfileDetailSchema, ProfileUpdateEmailSchema, \
-    ProfileReportSchema, ProfileOnFridgeSchema, ProfileOnFridgeListSchema, ProfileResumeSchema
+    ProfileReportSchema, ProfileOnFridgeSchema, ProfileResumeSchema
 from .utils import get_parsed_parameters
 
 profile_restfull = Api(profile_blueprint)

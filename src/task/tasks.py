@@ -6,7 +6,6 @@ from flask import current_app as app
 from src.task.models.profile import ProfileService, AddressService
 from src.task.models.sing import SignService
 from src.task.models.user import UserService, UserFirebaseService, UserFeedbackService, UserDeviceService
-from src.task.models.lover import LoversService
 
 REPORT = "REPORT"
 
@@ -328,9 +327,3 @@ def get_profiles_on_fridge(user):
         "message": "Profiles on fridge"
     }
 
-
-def save_lovers(profile, lovers):
-    LoversService(profile, lovers)
-    return {
-        "message": "Lovers saved!"
-    }

@@ -7,13 +7,13 @@ from marshmallow import ValidationError
 from matchbox import queries
 
 from src.microservices.authentication import jwt_required_gcp
-from src.profile.modules.schema import ProfileSchema, ProfileDetailSchema
+from src.profile.modules.schema import ProfileDetailSchema
+from src.task.models.profile import ProfileNotActive, ProfileStatus
 from src.task.models.user import UserService, UserFirebaseService
 from src.task.tasks import send_user_message_confirm_email, save_user_feedback, save_user_device
 from src.user.modules import user_blueprint
 from src.user.modules.schema import UserSchema, UserDeviceSchema
 from src.user.modules.utils import get_parsed_parameters, send_message_reset_password
-from src.task.models.profile import ProfileNotActive, ProfileStatus
 
 user_restfull = Api(user_blueprint)
 

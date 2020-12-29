@@ -15,9 +15,14 @@ class LoversService:
 
     def get_calculate_lovers(self):
         schema = LoverCardSchema(many=True)
-        lovers = [p for p in Profile.objects.all() \
-                  if p.id != self.profile.id \
-                  and p.id not in self.profile.fridge.profiles_on_fridge]
+        lovers = []
+        for p in Profile.objects.all():
+            if p.id != self.profile.id and self.profile.fridge:
+                if p.id not in self.profile.fridge.profiles_on_fridge:
+                    lovers.append(p)
+            else:
+                lovers.append(p)
+
         return schema.dump(lovers)
 
     @staticmethod
@@ -31,25 +36,6 @@ class Lovers(models.Model):
 
     class Meta:
         collection_name = 'lovers'
-
-    def __unicode__(self):
-        return self.id
-
-
-class Lover(models.Model):
-    age = models.IntegerField()
-    sign = models.TextField()
-    photo = models.ListField()
-    name = models.TextField()
-    about = models.TextField()
-    synastry = models.IntegerField()
-    way_of_love = models.ListField()
-    goals = models.ListField()
-    interested_in = models.ListField()
-    looking_for = models.ListField()
-    state_or_province = models.TextField()
-    city = models.TextField()
-    distance = models.IntegerField()
 
     def __unicode__(self):
         return self.id

@@ -9,7 +9,11 @@ class ChatService:
 
     def get_list_profiles(self, ids):
         profiles = []
-        for id in [id for id in ids if id not in self.profile.fridge.profiles_on_fridge]:
+        if self.profile.fridge:
+            for i in self.profile.fridge.profiles_on_fridge:
+                if i in ids:
+                    ids.remove(i)
+        for id in ids:
             try:
                 profiles.append(Profile.objects.get(id=id))
             except matchbox.queries.error.DocumentDoesNotExists:
