@@ -63,7 +63,7 @@ class ProfileSchema(Schema):
     id = fields.Str(dump_only=True)
     name = fields.Str(required=True)
     photo = fields.List(fields.Url(), allow_none=True)
-    about = fields.Str(required=True,
+    about = fields.Str(required=False,
                        validate=validate.Length(max=500))
     email = fields.Email(required=True)
     location = fields.Nested(LocationSchema, required=True)
@@ -117,7 +117,7 @@ class ProfileDetailSchema(Schema):
     id = fields.Str(dump_only=True)
     name = fields.Str(required=True)
     photo = fields.List(fields.Url())
-    about = fields.Str(required=True,
+    about = fields.Str(required=False,
                        validate=validate.Length(max=500))
     email = fields.Email(required=True)
     location = fields.Nested(LocationSchema, required=True)
